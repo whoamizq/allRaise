@@ -8,8 +8,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class MemberPO {
+	/**
+	 * Ö÷¼üid
+	 */
     private Integer id;
 
+    /**
+     * µÇÂ¼ÕË»§
+     */
     private String loginacct;
 
     private String userpswd;

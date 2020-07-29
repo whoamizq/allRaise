@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.whoami.raise.entity.ResultEntity;
 import com.whoami.raise.util.RaiseConstant;
 import com.whoami.raise.util.RaiseUtil;
-
+/**
+ * 不建议实现RedisOperationService
+ * @author whoami
+ *
+ */
 @RestController
 public class RedisOperationController {
 	@Autowired
@@ -31,7 +35,7 @@ public class RedisOperationController {
 			@RequestParam("normalValue") String normalValue, 
 			@RequestParam("timeoutMinute") Integer timeoutMinute){
 		// 对输入数据进行验证
-		if(!RaiseUtil.strEffectiveCheck(normalKey)) {
+		if(!RaiseUtil.strEffectiveCheck(normalKey) || !RaiseUtil.strEffectiveCheck(normalValue)) {
 			return ResultEntity.failed(RaiseConstant.MESSAGE_REDIS_KEY_OR_VALUE_INVALID);
 		}
 		
