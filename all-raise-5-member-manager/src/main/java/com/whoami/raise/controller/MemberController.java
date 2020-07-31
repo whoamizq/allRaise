@@ -7,6 +7,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +24,7 @@ import com.whoami.raise.util.RaiseConstant;
 import com.whoami.raise.util.RaiseUtil;
 
 @RestController
+@RequestMapping(value = "/member/manager")
 public class MemberController {
 	@Autowired
 	private RedisOperationRemoteService redisRemoteServerice;
@@ -37,11 +40,22 @@ public class MemberController {
 	private String appcode;
 	
 	/**
+	 * 退出登录
+	 * @param token
+	 * @return
+	 */
+	@GetMapping(value = "/logout")
+	public ResultEntity<String> logout(@RequestParam("token") String token){
+		return redisRemoteServerice.removeByKey(token);
+	}
+	
+	/**
 	 * 登录功能-具体实现
 	 * @param loginAcct
 	 * @param userPswd
 	 * @return
 	 */
+	@PostMapping(value = "/login")
 	public ResultEntity<MemberSignSuccessVO> login(@RequestParam("loginAcct") String loginAcct,
 			@RequestParam("userPswd") String userPswd){
 		
@@ -93,7 +107,7 @@ public class MemberController {
 	 * @param memberVO
 	 * @return
 	 */
-	@RequestMapping("/member/manager/register")
+	@RequestMapping("/register")
 	public ResultEntity<String> register(@RequestBody MemberVO memberVO){
 		
 		// 1. 检查验证码是否有效
@@ -166,7 +180,7 @@ public class MemberController {
 	 * @param phoneNum
 	 * @return
 	 */
-	@RequestMapping("/member/manager/send/code")
+	@RequestMapping("/send/code")
 	public ResultEntity<String> sendCode(@RequestParam("phoneNum") String phoneNum){
 		if(!RaiseUtil.strEffectiveCheck(phoneNum)) {
 			return ResultEntity.failed(RaiseConstant.MESSAGE_PHONE_NUM_INVALID);

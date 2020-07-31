@@ -15,8 +15,8 @@ public class ResultEntity<T> {
 	
 	public static final String SUCCESS = "SUCCESS";
 	public static final String FAILED = "FAILED";
-	public static final String NO_MSG = "NO_MSG";
-	public static final String NO_DATA = "NO_DATA";
+	public static final String NO_MSG = "没有提示信息！";
+	public static final String NO_DATA = "没有详细数据！";
 	/**
 	 * 没有数据的成功
 	 * @return
