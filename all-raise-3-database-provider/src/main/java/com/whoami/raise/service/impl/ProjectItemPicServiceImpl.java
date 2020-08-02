@@ -4,19 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.whoami.raise.mapper.ProjectPOMapper;
-import com.whoami.raise.service.ProjectService;
+import com.whoami.raise.mapper.ProjectItemPicPOMapper;
+import com.whoami.raise.service.ProjectItemPicService;
 
-/**
- * 项目表实现类
- * @author whoami
- *
- */
 @Service
 @Transactional(readOnly = true)
-public class ProjectServiceImpl implements ProjectService{
+public class ProjectItemPicServiceImpl implements ProjectItemPicService{
 	
 	@Autowired
-	private ProjectPOMapper projectMapper;
+	private ProjectItemPicPOMapper projectItemPicMapper;
 
 }
