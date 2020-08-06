@@ -24,7 +24,7 @@ import com.whoami.raise.util.RaiseConstant;
 import com.whoami.raise.util.RaiseUtil;
 
 @RestController
-@RequestMapping(value = "/member/manager")
+@RequestMapping(value = "member/manager")
 public class MemberController {
 	@Autowired
 	private RedisOperationRemoteService redisRemoteServerice;
