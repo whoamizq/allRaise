@@ -8,18 +8,39 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class MemberPO {
+	/**
+	 * 主键id
+	 */
     private Integer id;
 
+    /**
+     * 登录账户
+     */
     private String loginacct;
 
+    /*
+     * 用户密码
+     */
     private String userpswd;
 
+    /*
+     * 用户名称
+     */
     private String username;
 
+    /*
+     * 邮箱
+     */
     private String email;
 
+    /*
+     * 授权状态
+     */
     private Byte authstatus;
 
+    /*
+     * 用户状态
+     */
     private Byte usertype;
 
     private String realname;

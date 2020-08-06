@@ -5,6 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.whoami.raise.entity.ResultEntity;
+/**
+ * Redis远程调用方法
+ * @author whoami
+ *
+ */
 @FeignClient(value = "redis-provider")
 public interface RedisOperationRemoteService {
 	/**

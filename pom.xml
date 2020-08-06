@@ -340,5 +340,6 @@
 		<module>all-raise-3-database-provider</module>
 		<module>all-raise-4-redis-provider</module>
 		<module>all-raise-5-member-manager</module>
+		<module>all-raise-6-project-manager</module>
 	</modules>
 </project>
