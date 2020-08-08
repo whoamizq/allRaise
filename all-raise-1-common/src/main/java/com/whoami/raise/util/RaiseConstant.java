@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RaiseConstant {
+	// Redis key前缀
 	public static final String REDIS_RANDOM_CODE_PREFIX = "RANDOM_CODE_"; //
 	public static final String REDIS_MEMBER_SING_TOKEN_PREFIX = "SIGNED_MEMBER_";//用户登录前缀
+	public static final String REDIS_PROJECT_TEMP_TOKEN_PREFIX = "PROJECT_TEMP_TOKEN_";//保存初始化信息key
 	
 	public static final String ATTR_NAME_MESSAGE = "MESSAGE";
 	public static final String ATTR_NAME_LOGIN_ADMIN = "LOGIN-ADMIN";

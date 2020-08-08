@@ -12,6 +12,15 @@ import com.aliyun.api.gateway.demo.util.HttpUtils;
 
 public class RaiseUtil {
 	/**
+	 * 根据不同前缀生成Redis保存数据的key值
+	 * @param prefix
+	 * @return
+	 */
+	public static String generateRedisKeyByPrefix(String prefix) {
+		return prefix + UUID.randomUUID().toString().replaceAll("-", "");
+	}
+	
+	/**
 	 * 生成用户登录成功后使用的token
 	 * @return
 	 */
