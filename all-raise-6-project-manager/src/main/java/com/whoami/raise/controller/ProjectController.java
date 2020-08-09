@@ -1,5 +1,7 @@
 package com.whoami.raise.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,76 @@ public class ProjectController {
 	
 	@Autowired
 	private DataBaseOperationRemoteService dataBaseOperationRemoteService;
+	
+	/**
+	 * 保存图片--详情图片
+	 * @param memberSignToken
+	 * @param projectTempToken
+	 * @param detailPicturePathList
+	 * @return
+	 */
+	@RequestMapping(value = "/save/head/picture/path/list")
+	public ResultEntity<String> saveDetailPicturePathList(
+			@RequestParam("memberSignToken") String memberSignToken,
+			@RequestParam("projectTemoToken") String projectTempToken,
+			@RequestParam("detailPicturePathList")List<String> detailPicturePathList){
+		// 检查是否登录,menberSignToken是否有效
+		ResultEntity<String> resultEntity = redisOperationRemoteService.retrieveStringValueByStringKey(memberSignToken);
+		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
+			return ResultEntity.failed(resultEntity.getMessage());
+		}
+		// project-manager工程访问Redis查询ProjectVO对象
+		ResultEntity<String> resultEntityForGetValue = redisOperationRemoteService.retrieveStringValueByStringKey(projectTempToken);
+		if(ResultEntity.FAILED.equals(resultEntityForGetValue.getResult())) {
+			return ResultEntity.failed(resultEntityForGetValue.getMessage());
+		}
+		// 从Redis查询到JSON字符串
+		String projectVoJSON = resultEntityForGetValue.getData();
+		// 将json字符串还原为projectVO对象
+		ProjectVO projectVO = JSON.parseObject(projectVoJSON,ProjectVO.class);
+		// 将图片路径存入ProjectVO对象
+		projectVO.setDetailPicturePathList(detailPicturePathList);
+		// 将projectvo对象转换为json字符串
+		String jsonString = JSON.toJSONString(projectVO);
+		// 将JSON字符串重新存入Redis
+		
+		return redisOperationRemoteService.saveNormalStringKeyValue(projectTempToken, jsonString, -1);
+	}
+	
+	/**
+	 * 保存图片--头图
+	 * @param memberSignToken 会员token
+	 * @param projectTempToken
+	 * @param headerPicturePath 头图地址
+	 * @return
+	 */
+	@RequestMapping(value = "/save/head/picture/path")
+	public ResultEntity<String> saveHeadPicturePath(
+			@RequestParam("memberSignToken") String memberSignToken,
+			@RequestParam("projectTemoToken") String projectTempToken,
+			@RequestParam("headPicturePath")String headerPicturePath){
+		// 检查是否登录,menberSignToken是否有效
+		ResultEntity<String> resultEntity = redisOperationRemoteService.retrieveStringValueByStringKey(memberSignToken);
+		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
+			return ResultEntity.failed(resultEntity.getMessage());
+		}
+		// project-manager工程访问Redis查询ProjectVO对象
+		ResultEntity<String> resultEntityForGetValue = redisOperationRemoteService.retrieveStringValueByStringKey(projectTempToken);
+		if(ResultEntity.FAILED.equals(resultEntityForGetValue.getResult())) {
+			return ResultEntity.failed(resultEntityForGetValue.getMessage());
+		}
+		// 从Redis查询到JSON字符串
+		String projectVoJSON = resultEntityForGetValue.getData();
+		// 将json字符串还原为projectVO对象
+		ProjectVO projectVO = JSON.parseObject(projectVoJSON,ProjectVO.class);
+		// 将图片路径存入ProjectVO对象
+		projectVO.setHeaderPicturePath(headerPicturePath);
+		// 将projectvo对象转换为json字符串
+		String jsonString = JSON.toJSONString(projectVO);
+		// 将JSON字符串重新存入Redis
+		
+		return redisOperationRemoteService.saveNormalStringKeyValue(projectTempToken, jsonString, -1);
+	}
 
 	/**
 	 * 初始化项目，检查是否登录
