@@ -1,5 +1,6 @@
 package com.whoami.raise.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -14,6 +15,7 @@ import com.whoami.raise.api.DataBaseOperationRemoteService;
 import com.whoami.raise.api.RedisOperationRemoteService;
 import com.whoami.raise.entity.ResultEntity;
 import com.whoami.raise.entity.vo.ProjectVO;
+import com.whoami.raise.entity.vo.ReturnVO;
 import com.whoami.raise.util.RaiseConstant;
 import com.whoami.raise.util.RaiseUtil;
 
@@ -30,6 +32,48 @@ public class ProjectController {
 	
 	@Autowired
 	private DataBaseOperationRemoteService dataBaseOperationRemoteService;
+	
+	/**
+	 * 保存回报信息
+	 * @param returnVO
+	 * @return
+	 */
+	@RequestMapping(value = "/save/return/information")
+	public ResultEntity<String> saveReturnInformation(@RequestBody ReturnVO returnVO){
+		// 获取memberSignToken
+		String memberSignToken = returnVO.getMemberSignToken();
+		// 检查是否登录,menberSignToken是否有效
+		ResultEntity<String> resultEntity = redisOperationRemoteService.retrieveStringValueByStringKey(memberSignToken);
+		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
+			return ResultEntity.failed(resultEntity.getMessage());
+		}
+		// 从projectVOFront中获取projectTempToken
+		String projectTempToken = returnVO.getProjectTempToken();
+		// project-manager工程访问Redis查询ProjectVO对象
+		ResultEntity<String> resultEntityForGetValue = redisOperationRemoteService.retrieveStringValueByStringKey(projectTempToken);
+		if(ResultEntity.FAILED.equals(resultEntityForGetValue.getResult())) {
+			return ResultEntity.failed(resultEntityForGetValue.getMessage());
+		}
+		// 从Redis中查询到JSON字符串
+		String projectVOJSON = resultEntityForGetValue.getData();
+		// 转换为projectVO对象
+		ProjectVO projectVOBehind = JSON.parseObject(projectVOJSON,ProjectVO.class);
+		// 获取旧的回报信息集合
+		List<ReturnVO> returnVOList = projectVOBehind.getReturnVOList();
+		// 判断lsit是否有数据
+		if(!RaiseUtil.collectionEffectiveCheck(returnVOList)) {
+			// 初始化
+			returnVOList = new ArrayList<>();
+			projectVOBehind.setReturnVOList(returnVOList);
+		}
+		// 将当前回报信息存入List
+		returnVOList.add(returnVO);
+		// 重新对projectvo对象进行JSON转换
+		String jsonString = JSON.toJSONString(projectVOBehind);
+		// 重新把ProjectVo对象保存Redis
+		
+		return redisOperationRemoteService.saveNormalStringKeyValue(projectTempToken, jsonString, -1);
+	}
 	
 	/**
 	 * 项目信息保存
@@ -74,7 +118,7 @@ public class ProjectController {
 	 * @param detailPicturePathList
 	 * @return
 	 */
-	@RequestMapping(value = "/save/detailhead/picture/path/list")
+	@RequestMapping(value = "/save/detail/picture/path/list")
 	public ResultEntity<String> saveDetailPicturePathList(
 			@RequestParam("memberSignToken") String memberSignToken,
 			@RequestParam("projectTemoToken") String projectTempToken,
