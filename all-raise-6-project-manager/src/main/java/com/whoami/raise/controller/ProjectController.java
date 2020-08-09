@@ -2,7 +2,9 @@ package com.whoami.raise.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,13 +32,49 @@ public class ProjectController {
 	private DataBaseOperationRemoteService dataBaseOperationRemoteService;
 	
 	/**
+	 * 项目信息保存
+	 * @param projectVOFront 
+	 * @return
+	 */
+	@RequestMapping(value = "/save/project/information")
+	public ResultEntity<String> saveProjectInformation(@RequestBody ProjectVO projectVOFront){
+		// 获取memberSignToken
+		String memberSignToken = projectVOFront.getMemberSignToken();
+		// 检查是否登录,menberSignToken是否有效
+		ResultEntity<String> resultEntity = redisOperationRemoteService.retrieveStringValueByStringKey(memberSignToken);
+		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
+			return ResultEntity.failed(resultEntity.getMessage());
+		}
+		// 从projectVOFront中获取projectTempToken
+		String projectTempToken = projectVOFront.getProjectTempToken();
+		// project-manager工程访问Redis查询ProjectVO对象
+		ResultEntity<String> resultEntityForGetValue = redisOperationRemoteService.retrieveStringValueByStringKey(projectTempToken);
+		if(ResultEntity.FAILED.equals(resultEntityForGetValue.getResult())) {
+			return ResultEntity.failed(resultEntityForGetValue.getMessage());
+		}
+		// 从Redis中查询到JSON字符串
+		String projectVOJSON = resultEntityForGetValue.getData();
+		// 转换为projectVO对象
+		ProjectVO projectVOBehind = JSON.parseObject(projectVOJSON,ProjectVO.class);
+		projectVOFront.setHeaderPicturePath(projectVOBehind.getHeaderPicturePath());
+		projectVOFront.setDetailPicturePathList(projectVOBehind.getDetailPicturePathList());
+		// 将projectVOFront对象中的属性复制到projectVOBehind对象
+		BeanUtils.copyProperties(projectVOFront, projectVOBehind);
+		// 转换为JSON字符串
+		String jsonString = JSON.toJSONString(projectVOBehind);
+		// 将JSON字符串重新存入Redis
+		
+		return redisOperationRemoteService.saveNormalStringKeyValue(projectTempToken, jsonString, -1);
+	}
+	
+	/**
 	 * 保存图片--详情图片
 	 * @param memberSignToken
 	 * @param projectTempToken
 	 * @param detailPicturePathList
 	 * @return
 	 */
-	@RequestMapping(value = "/save/head/picture/path/list")
+	@RequestMapping(value = "/save/detailhead/picture/path/list")
 	public ResultEntity<String> saveDetailPicturePathList(
 			@RequestParam("memberSignToken") String memberSignToken,
 			@RequestParam("projectTemoToken") String projectTempToken,
