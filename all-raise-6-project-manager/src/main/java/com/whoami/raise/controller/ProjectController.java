@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.whoami.raise.api.DataBaseOperationRemoteService;
 import com.whoami.raise.api.RedisOperationRemoteService;
 import com.whoami.raise.entity.ResultEntity;
+import com.whoami.raise.entity.vo.MemberConfirmInfoVO;
 import com.whoami.raise.entity.vo.ProjectVO;
 import com.whoami.raise.entity.vo.ReturnVO;
 import com.whoami.raise.util.RaiseConstant;
@@ -32,6 +33,38 @@ public class ProjectController {
 	
 	@Autowired
 	private DataBaseOperationRemoteService dataBaseOperationRemoteService;
+	
+	/**
+	 * 保存确认信息
+	 * @param memberConfirmInfoVO
+	 * @return
+	 */
+	@RequestMapping(value = "/save/confirm/information")
+	public ResultEntity<String> saveConfirmInformation(@RequestBody MemberConfirmInfoVO memberConfirmInfoVO){
+		// 获取memberSignToken
+		String memberSignToken = memberConfirmInfoVO.getMemberSignToken();
+		// 检查是否登录,menberSignToken是否有效
+		ResultEntity<String> resultEntity = redisOperationRemoteService.retrieveStringValueByStringKey(memberSignToken);
+		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
+			return ResultEntity.failed(resultEntity.getMessage());
+		}
+		// 从projectVOFront中获取projectTempToken
+		String projectTempToken = memberConfirmInfoVO.getProjectTempToken();
+		// project-manager工程访问Redis查询ProjectVO对象
+		ResultEntity<String> resultEntityForGetValue = redisOperationRemoteService.retrieveStringValueByStringKey(projectTempToken);
+		if(ResultEntity.FAILED.equals(resultEntityForGetValue.getResult())) {
+			return ResultEntity.failed(resultEntityForGetValue.getMessage());
+		}
+		// 从Redis中查询到JSON字符串
+		String projectVOJSON = resultEntityForGetValue.getData();
+		// 转换为projectVO对象
+		ProjectVO projectVOBehind = JSON.parseObject(projectVOJSON,ProjectVO.class);
+		projectVOBehind.setMemberConfirmInfoVO(memberConfirmInfoVO);
+		// 重新对projectvo对象进行JSON转换
+		String jsonString = JSON.toJSONString(projectVOBehind);
+		// 重新把ProjectVo对象保存Redis
+		return redisOperationRemoteService.saveNormalStringKeyValue(projectTempToken, jsonString, -1);
+	}
 	
 	/**
 	 * 保存回报信息
