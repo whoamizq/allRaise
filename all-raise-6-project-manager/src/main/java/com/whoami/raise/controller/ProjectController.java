@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,6 +34,44 @@ public class ProjectController {
 	
 	@Autowired
 	private DataBaseOperationRemoteService dataBaseOperationRemoteService;
+	
+	/**
+	 * 数据库保存，保存项目信息
+	 * @param memberSignToken
+	 * @param projectTempToken
+	 * @return
+	 */
+	@RequestMapping(value = "/save/whole/project")
+	public ResultEntity<String> saveWholeProject(
+			@RequestParam("memberSignToken") String memberSignToken,
+			@RequestParam("projectTempToken") String projectTempToken){
+		// 检查是否登录,menberSignToken是否有效
+		ResultEntity<String> resultEntity = redisOperationRemoteService.retrieveStringValueByStringKey(memberSignToken);
+		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
+			return ResultEntity.failed(resultEntity.getMessage());
+		}
+		// 请登录后再操作
+		String memberId = resultEntity.getData();
+		if(StringUtils.isEmpty(memberId)) {
+			return ResultEntity.failed(RaiseConstant.MESSAGE_ACCESS_DENIED);
+		}
+		// project-manager工程访问Redis查询ProjectVO对象
+		ResultEntity<String> resultEntityForGetValue = redisOperationRemoteService.retrieveStringValueByStringKey(projectTempToken);
+		if(ResultEntity.FAILED.equals(resultEntityForGetValue.getResult())) {
+			return ResultEntity.failed(resultEntityForGetValue.getMessage());
+		}
+		// 从Redis查询到JSON字符串
+		String projectVOJSON = resultEntityForGetValue.getData();
+		// 转换为projectVO对象
+		ProjectVO projectVO = JSON.parseObject(projectVOJSON,ProjectVO.class);
+		// 执行保存
+		ResultEntity<String> resultEntityForSave = dataBaseOperationRemoteService.saveMemberRemote(projectVO,memberId);
+		if(ResultEntity.FAILED.equals(resultEntityForSave.getResult())) {
+			return resultEntityForSave;
+		}
+		// 删除Redis中临时数据
+		return redisOperationRemoteService.removeByKey(projectTempToken);
+	}
 	
 	/**
 	 * 保存确认信息
