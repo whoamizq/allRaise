@@ -12,15 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.whoami.raise.entity.po.MemberLaunchInfoPO;
 import com.whoami.raise.entity.po.ProjectItemPicPO;
 import com.whoami.raise.entity.po.ProjectPO;
+import com.whoami.raise.entity.po.ReturnPO;
 import com.whoami.raise.entity.vo.MemberLauchInfoVO;
 import com.whoami.raise.entity.vo.ProjectVO;
+import com.whoami.raise.entity.vo.ReturnVO;
 import com.whoami.raise.mapper.MemberLaunchInfoPOMapper;
 import com.whoami.raise.mapper.ProjectItemPicPOMapper;
 import com.whoami.raise.mapper.ProjectPOMapper;
+import com.whoami.raise.mapper.ReturnPOMapper;
 import com.whoami.raise.mapper.TagPOMapper;
 import com.whoami.raise.mapper.TypePOMapper;
 import com.whoami.raise.service.ProjectService;
-import com.whoami.raise.util.RaiseConstant;
 import com.whoami.raise.util.RaiseUtil;
 
 /**
@@ -42,6 +44,8 @@ public class ProjectServiceImpl implements ProjectService{
 	private ProjectItemPicPOMapper projectItemPicPOMapper;
 	@Autowired
 	private MemberLaunchInfoPOMapper memberLaunchInfoPOMapper;
+	@Autowired
+	private ReturnPOMapper returnPOMapper;
 
 	
 	@Override
@@ -95,6 +99,18 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		
 		// 根据ReturnVO的List保存ReturnPO
+		List<ReturnVO> returnVOList = projectVO.getReturnVOList();
+		if(RaiseUtil.collectionEffectiveCheck(returnVOList)) {
+			List<ReturnPO> returnPOList = new ArrayList<>();
+			
+			for(ReturnVO returnVO:returnVOList) {
+				ReturnPO returnPO = new ReturnPO();
+				BeanUtils.copyProperties(returnVO, returnPO);
+				returnPO.setProjectid(projectId);
+				returnPOList.add(returnPO);
+			}
+			returnPOMapper.insertBatch(returnPOList);
+		}
 		
 		// 保存MemberConfirmInfoPO
 		

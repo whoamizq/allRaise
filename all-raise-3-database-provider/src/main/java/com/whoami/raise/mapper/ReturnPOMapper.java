@@ -27,4 +27,10 @@ public interface ReturnPOMapper {
     int updateByPrimaryKeySelective(ReturnPO record);
 
     int updateByPrimaryKey(ReturnPO record);
+
+    /**
+     * 保存回报信息
+     * @param returnPOList
+     */
+	void insertBatch(@Param("returnPOList")List<ReturnPO> returnPOList);
 }
