@@ -67,6 +67,12 @@
   <sql id="Base_Column_List" >
     id, projectid, item_pic_path
   </sql>
+  <insert id="insertBatch">
+  	insert into t_project_item_pic(projectid,item_pic_path) values
+  	<foreach collection="projectItemPicPOList" item="projectItemPic" separator=",">
+  		(#{projectItemPic.projectid},#{projectItemPic.itemPicPath})
+  	</foreach>
+  </insert>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.whoami.raise.entity.po.ProjectItemPicPOExample" >
     select
     <if test="distinct" >

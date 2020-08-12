@@ -1,5 +1,6 @@
 package com.whoami.raise.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.BeanUtils;
@@ -8,8 +9,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.whoami.raise.entity.po.ProjectItemPicPO;
 import com.whoami.raise.entity.po.ProjectPO;
 import com.whoami.raise.entity.vo.ProjectVO;
+import com.whoami.raise.mapper.ProjectItemPicPOMapper;
 import com.whoami.raise.mapper.ProjectPOMapper;
 import com.whoami.raise.mapper.TagPOMapper;
 import com.whoami.raise.mapper.TypePOMapper;
@@ -32,6 +35,8 @@ public class ProjectServiceImpl implements ProjectService{
 	private TypePOMapper typePOMapper;
 	@Autowired
 	private TagPOMapper tagPOMapper;
+	@Autowired
+	private ProjectItemPicPOMapper projectItemPicPOMapper;
 
 	
 	@Override
@@ -60,6 +65,20 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		
 		// 保存detailPicturePathList
+		// 从VO对象中获取detailPicturePathList
+		List<String> detailPicturePathList = projectVO.getDetailPicturePathList();
+		if(RaiseUtil.collectionEffectiveCheck(detailPicturePathList)) {
+			// 创建一个空List集合，用来存储ProjectItemPicPO对象
+			List<ProjectItemPicPO> projectItemPicPOList = new ArrayList<ProjectItemPicPO>();
+			//遍历detailPicturePathList
+			for (String detailPath : detailPicturePathList) {
+				// 创建projectItemPicPO对象
+				ProjectItemPicPO projectItemPicPO = new ProjectItemPicPO(null,projectId,detailPath);
+				projectItemPicPOList.add(projectItemPicPO);
+			}
+			// 执行批量保存
+			projectItemPicPOMapper.insertBatch(projectItemPicPOList);
+		}
 		
 		// 保存MemberLaunchInfoPO
 		
