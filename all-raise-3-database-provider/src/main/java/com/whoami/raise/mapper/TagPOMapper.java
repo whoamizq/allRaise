@@ -27,4 +27,11 @@ public interface TagPOMapper {
     int updateByPrimaryKeySelective(TagPO record);
 
     int updateByPrimaryKey(TagPO record);
+
+    /**
+     * ±£¥Ê±Í«©List
+     * @param projectId
+     * @param tagIdList
+     */
+	void insertRelationshipBatch(@Param("projectId")Integer projectId,@Param("tagIdList") List<Integer> tagIdList);
 }

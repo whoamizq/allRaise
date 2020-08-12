@@ -27,4 +27,11 @@ public interface TypePOMapper {
     int updateByPrimaryKeySelective(TypePO record);
 
     int updateByPrimaryKey(TypePO record);
+
+    /**
+     * 批量保存类型id数据
+     * @param projectId
+     * @param typeIdList
+     */
+	void insertRelationshipBatch(@Param("projectId")Integer projectId,@Param("typeIdList") List<Integer> typeIdList);
 }
