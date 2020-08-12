@@ -9,13 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.whoami.raise.entity.po.MemberConfirmInfoPO;
 import com.whoami.raise.entity.po.MemberLaunchInfoPO;
 import com.whoami.raise.entity.po.ProjectItemPicPO;
 import com.whoami.raise.entity.po.ProjectPO;
 import com.whoami.raise.entity.po.ReturnPO;
+import com.whoami.raise.entity.vo.MemberConfirmInfoVO;
 import com.whoami.raise.entity.vo.MemberLauchInfoVO;
 import com.whoami.raise.entity.vo.ProjectVO;
 import com.whoami.raise.entity.vo.ReturnVO;
+import com.whoami.raise.mapper.MemberConfirmInfoPOMapper;
 import com.whoami.raise.mapper.MemberLaunchInfoPOMapper;
 import com.whoami.raise.mapper.ProjectItemPicPOMapper;
 import com.whoami.raise.mapper.ProjectPOMapper;
@@ -46,6 +49,8 @@ public class ProjectServiceImpl implements ProjectService{
 	private MemberLaunchInfoPOMapper memberLaunchInfoPOMapper;
 	@Autowired
 	private ReturnPOMapper returnPOMapper;
+	@Autowired
+	private MemberConfirmInfoPOMapper memberConfirmInfoPOMapper;
 
 	
 	@Override
@@ -113,6 +118,13 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		
 		// ±£¥ÊMemberConfirmInfoPO
+		MemberConfirmInfoVO memberConfirmInfoVO = projectVO.getMemberConfirmInfoVO();
+		if(memberConfirmInfoVO!=null) {
+			MemberConfirmInfoPO memberConfirmInfoPO = new MemberConfirmInfoPO(null,
+					Integer.parseInt(memberId),memberConfirmInfoVO.getPaynum(),
+					memberConfirmInfoVO.getCardnum());
+			memberConfirmInfoPOMapper.insert(memberConfirmInfoPO);
+		}
 		
 	}
 
