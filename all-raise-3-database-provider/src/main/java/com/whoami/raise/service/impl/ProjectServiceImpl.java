@@ -9,9 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.whoami.raise.entity.po.MemberLaunchInfoPO;
 import com.whoami.raise.entity.po.ProjectItemPicPO;
 import com.whoami.raise.entity.po.ProjectPO;
+import com.whoami.raise.entity.vo.MemberLauchInfoVO;
 import com.whoami.raise.entity.vo.ProjectVO;
+import com.whoami.raise.mapper.MemberLaunchInfoPOMapper;
 import com.whoami.raise.mapper.ProjectItemPicPOMapper;
 import com.whoami.raise.mapper.ProjectPOMapper;
 import com.whoami.raise.mapper.TagPOMapper;
@@ -37,6 +40,8 @@ public class ProjectServiceImpl implements ProjectService{
 	private TagPOMapper tagPOMapper;
 	@Autowired
 	private ProjectItemPicPOMapper projectItemPicPOMapper;
+	@Autowired
+	private MemberLaunchInfoPOMapper memberLaunchInfoPOMapper;
 
 	
 	@Override
@@ -81,6 +86,13 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		
 		// 保存MemberLaunchInfoPO
+		MemberLauchInfoVO memberLauchInfoVO = projectVO.getMemberLauchInfoVO();
+		if(memberLauchInfoVO!=null) {
+			MemberLaunchInfoPO memberLaunchInfoPO = new MemberLaunchInfoPO();
+			BeanUtils.copyProperties(memberLauchInfoVO, memberLaunchInfoPO);
+			memberLaunchInfoPO.setMemberid(Integer.parseInt(memberId));
+			memberLaunchInfoPOMapper.insert(memberLaunchInfoPO);
+		}
 		
 		// 根据ReturnVO的List保存ReturnPO
 		

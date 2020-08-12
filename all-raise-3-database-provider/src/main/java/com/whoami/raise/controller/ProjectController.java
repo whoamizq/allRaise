@@ -35,6 +35,7 @@ public class ProjectController {
 			projectService.saveProject(projectVO,memberId);
 			return ResultEntity.successNoData();
 		}catch (Exception e) {
+			e.printStackTrace();
 			// TODO: handle exception
 			return ResultEntity.failed(e.getMessage());
 		}
