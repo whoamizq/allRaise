@@ -69,7 +69,7 @@ public class ProjectServiceImpl implements ProjectService{
 		
 		// 保存typeIdList
 		List<Integer> typeIdList = projectVO.getTypeIdList();
-		if(RaiseUtil.collectionEffectiveCheck(typeIdList)) {
+		if(RaiseUtil.collectionEffectiveCheck(typeIdList)) { // 是否存在
 			typePOMapper.insertRelationshipBatch(projectId,typeIdList);
 		}
 		
@@ -97,7 +97,7 @@ public class ProjectServiceImpl implements ProjectService{
 		
 		// 保存MemberLaunchInfoPO
 		MemberLauchInfoVO memberLauchInfoVO = projectVO.getMemberLauchInfoVO();
-		if(memberLauchInfoVO!=null) {
+		if(memberLauchInfoVO!=null) { // 不为空
 			MemberLaunchInfoPO memberLaunchInfoPO = new MemberLaunchInfoPO();
 			BeanUtils.copyProperties(memberLauchInfoVO, memberLaunchInfoPO);
 			memberLaunchInfoPO.setMemberid(Integer.parseInt(memberId));
@@ -106,7 +106,7 @@ public class ProjectServiceImpl implements ProjectService{
 		
 		// 根据ReturnVO的List保存ReturnPO
 		List<ReturnVO> returnVOList = projectVO.getReturnVOList();
-		if(RaiseUtil.collectionEffectiveCheck(returnVOList)) {
+		if(RaiseUtil.collectionEffectiveCheck(returnVOList)) { // 数组不能为空
 			List<ReturnPO> returnPOList = new ArrayList<>();
 			
 			for(ReturnVO returnVO:returnVOList) {
