@@ -28,7 +28,7 @@ public class ProjectPO {
     /*
      * 筹集金额
      */
-    private Long money;
+    private Integer money;
 
     /*
      * 筹集天数
@@ -104,11 +104,11 @@ public class ProjectPO {
         this.projectDescription = projectDescription == null ? null : projectDescription.trim();
     }
 
-    public Long getMoney() {
+    public Integer getMoney() {
         return money;
     }
 
-    public void setMoney(Long money) {
+    public void setMoney(Integer money) {
         this.money = money;
     }
 

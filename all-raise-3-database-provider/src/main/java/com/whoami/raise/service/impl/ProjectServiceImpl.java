@@ -60,6 +60,7 @@ public class ProjectServiceImpl implements ProjectService{
 		// 保存projectVO
 		ProjectPO projectPO = new ProjectPO();
 		BeanUtils.copyProperties(projectVO, projectPO);
+		projectPO.setMemberid(Integer.parseInt(memberId));
 		projectMapper.insert(projectPO);
 		
 		// 获取保存ProjectPO后得到的自增主键
