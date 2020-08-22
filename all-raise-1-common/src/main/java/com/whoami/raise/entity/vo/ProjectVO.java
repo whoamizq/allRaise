@@ -1,5 +1,6 @@
 package com.whoami.raise.entity.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectVO {
+public class ProjectVO  implements Serializable{
 	// 用户登录系统后，系统分配的token值，用于识别用户身份。
 	// 用户的id可以根据token值查询Redis得到
 	private String memberSignToken;

@@ -1,5 +1,7 @@
 package com.whoami.raise.entity.vo;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberSignSuccessVO {
+public class MemberSignSuccessVO implements Serializable{
 	/*
 	 * ÓÃ»§Ãû
 	 */
