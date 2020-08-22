@@ -7,6 +7,6 @@ spring:  application:    name: front-end
   thymeleaf:    prefix: classpath:/templates/
     suffix: .html
     cache: false  # 开发时关闭缓存
-eureka:  client:    register-with-eureka: false
+eureka:  client:    register-with-eureka: false # 不需要在注册中心注册
     service-url:      defaultZone: http://location:1000/eureka/
   instance:    prefer-ip-address: true
