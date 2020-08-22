@@ -1,5 +1,7 @@
 package com.whoami.raise.handler;
 
+import java.util.Objects;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,30 @@ import com.whoami.raise.util.RaiseConstant;
 public class MemberHandler {
 	@Autowired
 	private MemberManagerRemoteService memberManagerRemoteService;
+	
+	/**
+	 * 退出登录
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value = "/logout.html")
+	public String logout(HttpSession session) {
+		// 从现有Session中获取已登录的Member
+		MemberSignSuccessVO memberSignSuccessVO = (MemberSignSuccessVO)session.getAttribute(RaiseConstant.ATTR_NAME_LOGIN_MEMBER);
+		// 校验数据,是否已经退出
+		if(Objects.isNull(memberSignSuccessVO)) {
+			return "redirect:/";
+		}
+		// 调用远程方法删除Redis中存储的token
+		ResultEntity<String> resultEntity = memberManagerRemoteService.logout(memberSignSuccessVO.getToken());
+		// 调用是否成功
+		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
+			throw new RuntimeException(resultEntity.getMessage());
+		}
+		// 释放单当前session
+		session.invalidate();
+		return "redirect:/index.html";
+	}
 	
 	/**
 	 * 登录
