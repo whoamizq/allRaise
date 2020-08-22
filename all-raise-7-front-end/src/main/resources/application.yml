@@ -1,0 +1,12 @@
+server:
+  port: 80
+spring:  application:    name: front-end
+  redis:    host: 127.0.0.1
+    jedis:      pool:        max-idle: 100
+  session:    store-type: redis
+  thymeleaf:    prefix: classpath:/templates/
+    suffix: .html
+    cache: false  # 开发时关闭缓存
+eureka:  client:    register-with-eureka: false
+    service-url:      defaultZone: http://location:1000/eureka/
+  instance:    prefer-ip-address: true

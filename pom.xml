@@ -341,5 +341,6 @@
 		<module>all-raise-4-redis-provider</module>
 		<module>all-raise-5-member-manager</module>
 		<module>all-raise-6-project-manager</module>
+		<module>all-raise-7-front-end</module>
 	</modules>
 </project>
