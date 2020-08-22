@@ -37,7 +37,7 @@ public class MemberHandler {
 		// 登录成功
 		MemberSignSuccessVO memberSignSuccessVO = resultEntity.getData();
 		// 将对象存入session域
-		session.setAttribute(RaiseConstant.ATTR_NAME_LOGIN_ADMIN, memberSignSuccessVO);
+		session.setAttribute(RaiseConstant.ATTR_NAME_LOGIN_MEMBER, memberSignSuccessVO);
 		return "redirect:/member/to/member/center/page.html";
 	}
 }

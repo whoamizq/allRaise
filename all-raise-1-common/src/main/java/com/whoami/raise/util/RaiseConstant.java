@@ -12,6 +12,7 @@ public class RaiseConstant {
 	public static final String ATTR_NAME_MESSAGE = "MESSAGE";
 	public static final String ATTR_NAME_LOGIN_ADMIN = "LOGIN-ADMIN";
 	public static final String ATTR_NAME_PAGE_INFO = "PAGE-INFO";
+	public static final String ATTR_NAME_LOGIN_MEMBER = "LOGIN-MEMBER";
 	
 	public static final String MESSAGE_LOGIN_FAILED = "登录账号或密码不正确！请核对后再登录！";
 	public static final String MESSAGE_CODE_INVALID = "明文不是有效字符串，请核对后再操作！";
