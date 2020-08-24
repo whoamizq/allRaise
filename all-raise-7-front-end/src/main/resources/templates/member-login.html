@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="UTF-8" xmlns:th="www.thymeleaf.org">
+<html lang="UTF-8" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -11,17 +11,15 @@
 	th:href="@{/resources/bootstrap/css/bootstrap.min.css}">
 <link rel="stylesheet" href="css/font-awesome.min.css"
 	th:href="@{/resources/css/font-awesome.min.css}">
-<link rel="styleshseet" href="css/login.css"
+<link rel="stylesheet" href="css/login.css"
 	th:href="@{/resources/css/login.css}">
 <script src="jquery/jquery-2.1.1.min.js"
 	th:src="@{/resources/jquery/jquery-2.1.1.min.js}"></script>
 <script src="bootstrap/js/bootstrap.min.js"
 	th:src="@{/resources/bootstrap/js/bootstrap.min.js}"></script>
-<style>
-</style>
 </head>
 <body>
-	<!-- <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
 				<div>
@@ -29,10 +27,9 @@
 				</div>
 			</div>
 		</div>
-	</nav> -->
+	</nav>
 
 	<div class="container">
-
 		<form th:action="@{/member/do/login.html}" method="post" class="form-signin" role="form">
 			<h2 class="form-signin-heading">
 				<i class="glyphicon glyphicon-log-in"></i> 用户登录
