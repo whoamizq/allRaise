@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.whoami.raise.entity.po.MemberConfirmInfoPO;
 import com.whoami.raise.entity.po.MemberLaunchInfoPO;
+import com.whoami.raise.entity.po.MemberLaunchInfoPOExample;
 import com.whoami.raise.entity.po.ProjectItemPicPO;
 import com.whoami.raise.entity.po.ProjectPO;
 import com.whoami.raise.entity.po.ReturnPO;
@@ -98,6 +99,12 @@ public class ProjectServiceImpl implements ProjectService{
 		// 保存MemberLaunchInfoPO
 		MemberLauchInfoVO memberLauchInfoVO = projectVO.getMemberLauchInfoVO();
 		if(memberLauchInfoVO!=null) { // 不为空
+			// 补充--------------
+			// 将旧的用户发起人信息删除
+			MemberLaunchInfoPOExample example = new MemberLaunchInfoPOExample();
+			example.createCriteria().andMemberidEqualTo(Integer.parseInt(memberId));
+			memberLaunchInfoPOMapper.deleteByExample(example);
+			// ------------------
 			MemberLaunchInfoPO memberLaunchInfoPO = new MemberLaunchInfoPO();
 			BeanUtils.copyProperties(memberLauchInfoVO, memberLaunchInfoPO);
 			memberLaunchInfoPO.setMemberid(Integer.parseInt(memberId));
