@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.whoami.raise.entity.ResultEntity;
+import com.whoami.raise.entity.po.MemberLaunchInfoPO;
 import com.whoami.raise.entity.po.MemberPO;
+import com.whoami.raise.service.MemberLaunchInfoService;
 import com.whoami.raise.service.MemberService;
 import com.whoami.raise.util.RaiseConstant;
 import com.whoami.raise.util.RaiseUtil;
@@ -17,6 +19,20 @@ public class MemberController {
 	
 	@Autowired
 	private MemberService memberService;
+	
+	@Autowired
+	private MemberLaunchInfoService memberLaunchInfoService;
+	
+	/**
+	 * 查询项目发起人信息
+	 * @param memberId
+	 * @return
+	 */
+	@RequestMapping(value = "retrieve/member/launch/info/po")
+	public ResultEntity<MemberLaunchInfoPO> retrieveMemberLaunchInfoPO(@RequestParam("memberId")String memberId){
+		MemberLaunchInfoPO memberLaunchInfoPO = memberLaunchInfoService.getMemberLaunchInfoPO(memberId);
+		return ResultEntity.successWithData(memberLaunchInfoPO);
+	}
 	/**
 	 * 根据账号查询menber对象
 	 * @param loginAcct
