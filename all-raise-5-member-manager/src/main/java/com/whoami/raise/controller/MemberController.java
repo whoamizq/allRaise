@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.whoami.raise.api.DataBaseOperationRemoteService;
 import com.whoami.raise.api.RedisOperationRemoteService;
 import com.whoami.raise.entity.ResultEntity;
+import com.whoami.raise.entity.po.MemberLaunchInfoPO;
 import com.whoami.raise.entity.po.MemberPO;
 import com.whoami.raise.entity.vo.MemberSignSuccessVO;
 import com.whoami.raise.entity.vo.MemberVO;
@@ -38,6 +39,23 @@ public class MemberController {
 	// Spring会根据@Value注解中的表达式读取yml配置文件给成员变量设置对应的值
 	@Value("${raise.short.message.appCode}")
 	private String appcode;
+	
+	/**
+	 * 根据member-manager查询项目发起人信息
+	 * @param token
+	 * @return
+	 */
+	@RequestMapping(value = "/retrieve/member/launch/info/by/member/token")
+	public ResultEntity<MemberLaunchInfoPO> retrieveMemberLaunchInfoByMemberToken(@RequestParam("token") String token){
+		// 根据token查询memberId
+		ResultEntity<String> resultEntity = redisRemoteServerice.retrieveStringValueByStringKey(token);
+		String memberId = resultEntity.getData();
+		if(memberId.isEmpty()) {
+			return ResultEntity.failed(RaiseConstant.MESSAGE_ACCESS_DENIED);
+		}
+		// 根据memberId查询memberLaunchInfoPO
+		return dataBaseOperationRemoteService.retrieveMemberLaunchInfoPO(memberId);
+	}
 	
 	/**
 	 * 退出登录

@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberSignSuccessVO implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	/*
 	 * ÓÃ»§Ãû
 	 */

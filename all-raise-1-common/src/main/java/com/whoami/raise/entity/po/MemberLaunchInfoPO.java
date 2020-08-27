@@ -1,5 +1,7 @@
 package com.whoami.raise.entity.po;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,7 +14,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class MemberLaunchInfoPO {
+public class MemberLaunchInfoPO implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
     private Integer id;
 
     /*
