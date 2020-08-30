@@ -1,6 +1,8 @@
 package com.whoami.raise.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,6 +25,15 @@ public class RaiseUtil {
 			extensibleName = originalFileName.substring(originalFileName.lastIndexOf("."));
 		}
 		return UUID.randomUUID().toString().replaceAll("-", "")+extensibleName;
+	}
+	
+	/**
+	 * 根据日期生成目录名称
+	 * @param ossProjectParentFolder
+	 * @return
+	 */
+	public static String generateFolderNameByDate(String ossProjectParentFolder) {
+		return ossProjectParentFolder+"/"+new SimpleDateFormat("yyyyMMdd").format(new Date());
 	}
 	
 	/**
