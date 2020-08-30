@@ -11,6 +11,20 @@ import org.apache.http.util.EntityUtils;
 import com.aliyun.api.gateway.demo.util.HttpUtils;
 
 public class RaiseUtil {
+	
+	/**
+	 * 生成文件名
+	 * @param originalFileName 原始文件名
+	 * @return
+	 */
+	public static String generateFileName(String originalFileName) {
+		String extensibleName="";
+		if(originalFileName.contains(".")) {
+			extensibleName = originalFileName.substring(originalFileName.lastIndexOf("."));
+		}
+		return UUID.randomUUID().toString().replaceAll("-", "")+extensibleName;
+	}
+	
 	/**
 	 * 根据不同前缀生成Redis保存数据的key值
 	 * @param prefix
