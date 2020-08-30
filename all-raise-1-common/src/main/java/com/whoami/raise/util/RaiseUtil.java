@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.management.RuntimeErrorException;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 

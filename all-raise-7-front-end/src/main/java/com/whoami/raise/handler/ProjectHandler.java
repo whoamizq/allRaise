@@ -1,22 +1,28 @@
 package com.whoami.raise.handler;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.whoami.raise.api.MemberManagerRemoteService;
 import com.whoami.raise.api.ProjectOperationRemoteService;
 import com.whoami.raise.entity.ResultEntity;
 import com.whoami.raise.entity.po.MemberLaunchInfoPO;
-import com.whoami.raise.entity.vo.MemberLauchInfoVO;
 import com.whoami.raise.entity.vo.MemberSignSuccessVO;
 import com.whoami.raise.entity.vo.ProjectVO;
 import com.whoami.raise.util.RaiseConstant;
+import com.whoami.raise.util.RaiseUtil;
 
 /**
  * 项目
@@ -29,6 +35,62 @@ public class ProjectHandler {
 	private ProjectOperationRemoteService projectOperationRemoteService;
 	@Autowired
 	private MemberManagerRemoteService memberManagerRemoteService;
+	// 目录
+	@Value(value = "${oss.project.parent.folder}")
+	private String ossProjectParentFolder;
+	// 区域节点
+	@Value(value = "${oss.endpoint}")
+	private String endpoint;
+	// 密钥
+	@Value(value = "${oss.accessKeyId}")
+	private String accessKeyId;
+	@Value(value = "${oss.accessKeySecret}")
+	private String accessKeySecret;
+	// 空间名
+	@Value(value = "${oss.bucketName}")
+	private String bucketName;
+	// 上传域名
+	@Value(value = "${oss.bucket.domain}")
+	private String bucketDomain;
+	
+	/**
+	 * 上传文件到oss，handler方法
+	 * @param headPicture
+	 * @param session
+	 * @return
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/upload/head/picture")
+	public ResultEntity<String> uploadHeadPicture(@RequestParam("headPicture")MultipartFile headPicture,
+			HttpSession session) throws IOException{
+		// 登录检查
+		MemberSignSuccessVO signVO = (MemberSignSuccessVO) session.getAttribute(RaiseConstant.ATTR_NAME_LOGIN_MEMBER);
+		if(Objects.isNull(signVO)) {
+			return ResultEntity.failed(RaiseConstant.MESSAGE_ACCESS_DENIED);
+		}
+		// 排除上传文件为空的情况
+		if(headPicture.isEmpty()) {
+			return ResultEntity.failed(RaiseConstant.MESSAGE_UPLOAD_FILE_EMPTY);
+		}
+		// 准备 文件名
+		String originalFileName = headPicture.getOriginalFilename();
+		String fileName = RaiseUtil.generateFileName(originalFileName);
+		// 目录
+		String folderName = RaiseUtil.generateFolderNameByDate(ossProjectParentFolder);
+		// io流
+		InputStream inputStream = headPicture.getInputStream();
+		// 执行上传
+		RaiseUtil.uploadSingleFile(endpoint, accessKeyId, accessKeySecret, fileName, folderName, bucketName, inputStream);
+		// 拼接headerPicturePath
+		String headerPicturePath = bucketDomain+"/"+folderName+"/"+fileName;
+		// 获取图片相关信息
+		String memberSignToken = signVO.getToken();
+		ProjectVO projectVO = (ProjectVO) session.getAttribute(RaiseConstant.ATTR_NAME_INITED_PROJECT);
+		String projectTempToken = projectVO.getProjectTempToken();
+		// 保存头图相关信息
+		return projectOperationRemoteService.saveHeadPicturePath(memberSignToken, projectTempToken, headerPicturePath);
+	}
 	
 	/**
 	 * 执行peoject初始化操作
@@ -49,7 +111,7 @@ public class ProjectHandler {
 		if(ResultEntity.FAILED.equals(resultEntity.getResult())) {
 			throw new RuntimeException(resultEntity.getMessage());
 		}
-		// 补充操作：将初始化项目的信息存入session
+		// 补充操作：将初始化项目的信息存入session  
 		ProjectVO projectVO = resultEntity.getData();
 		session.setAttribute(RaiseConstant.ATTR_NAME_INITED_PROJECT, projectVO);
 		return "redirect:/project/to/create/project/page";

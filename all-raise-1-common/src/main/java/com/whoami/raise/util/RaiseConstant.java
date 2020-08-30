@@ -34,6 +34,7 @@ public class RaiseConstant {
 	public static final String MESSAGE_CODE_NOT_MATCH = "验证码不匹配！";
 
 	public static final String MESSAGE_CODE_NOT_EXISTS = "验证码不存在或已过期！";
+	public static final String MESSAGE_UPLOAD_FILE_EMPTY = "上传文件不能为空！";
 	
 	static {
 		EXCEPTION_MESSAGE_MAP.put("java.lang.ArithmeticException", "系统在进行数学运算时发生错误");
