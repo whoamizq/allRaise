@@ -2,6 +2,8 @@ package com.whoami.raise.handler;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.HttpSession;
@@ -52,6 +54,49 @@ public class ProjectHandler {
 	// 上传域名
 	@Value(value = "${oss.bucket.domain}")
 	private String bucketDomain;
+	
+	/**
+	 * 保存项目图片详情
+	 * @param session
+	 * @param detailPictureList
+	 * @return
+	 * @throws IOException
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/upload/detail/picture")
+	public ResultEntity<String> uploadDetailPicture(HttpSession session,
+			@RequestParam("detailPicture") List<MultipartFile> detailPictureList) throws IOException{
+		// 登录检查
+		MemberSignSuccessVO signVO = (MemberSignSuccessVO) session.getAttribute(RaiseConstant.ATTR_NAME_LOGIN_MEMBER);
+		
+		if(Objects.isNull(signVO)) {
+			return ResultEntity.failed(RaiseConstant.MESSAGE_ACCESS_DENIED);
+		}
+		// 遍历用户上传的文件
+		if(!RaiseUtil.collectionEffectiveCheck(detailPictureList)) {
+			return ResultEntity.failed(RaiseConstant.MESSAGE_UPLOAD_FILE_EMPTY);
+		}
+		List<String> detailPicturePathList = new ArrayList<String>();
+		
+		for(MultipartFile detailPicture:detailPictureList) {
+			boolean empty = detailPicture.isEmpty();
+			if(empty) {
+				continue;
+			}
+			InputStream inputStream = detailPicture.getInputStream();
+			String originalFileName = detailPicture.getOriginalFilename();
+			String fileName = RaiseUtil.generateFileName(originalFileName);
+			String folderName = RaiseUtil.generateFolderNameByDate(ossProjectParentFolder);
+			RaiseUtil.uploadSingleFile(endpoint, accessKeyId, accessKeySecret, fileName, folderName, bucketName, inputStream);
+			String detailPicturePath = bucketDomain+"/"+folderName+"/"+fileName;
+			detailPicturePathList.add(detailPicturePath);
+		}
+		// 获取保存头图所需要的相关信息
+		String memberSignToken = signVO.getToken();
+		ProjectVO projectVO = (ProjectVO) session.getAttribute(RaiseConstant.ATTR_NAME_INITED_PROJECT);
+		String projectTempToken = projectVO.getProjectTempToken();
+		return projectOperationRemoteService.saveDetailPicturePathList(memberSignToken, projectTempToken, detailPicturePathList);
+	}
 	
 	/**
 	 * 上传文件到oss，handler方法

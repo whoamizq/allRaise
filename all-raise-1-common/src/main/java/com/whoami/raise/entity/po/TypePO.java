@@ -1,5 +1,7 @@
 package com.whoami.raise.entity.po;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -12,7 +14,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class TypePO {
+public class TypePO implements Serializable{
+	private static final long serialVersionUID = 1L;
     private Integer id;
 
     /*
