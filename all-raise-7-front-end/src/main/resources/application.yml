@@ -12,13 +12,3 @@ eureka:  client:    register-with-eureka: false # 不需要在注册中心注�
   instance:    prefer-ip-address: true
     
 # oss配置
-oss:
-  endpoint: http://oss-cn-shenzhen.aliyuncs.com
-  accessKeyId: LTAI4GJLpLTCSoMvUBRxx71v
-  accessKeySecret: gQ4jU4I6qNzZZbhkj54N7vXH5FW5An
-  bucketName: whoami-raise
-  bucket:
-    domain: http://whoami-raise.oss-cn-shenzhen.aliyuncs.com
-  project:
-    parent:
-      folder: project
